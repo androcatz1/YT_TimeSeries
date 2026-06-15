@@ -2,7 +2,7 @@ name: Daily YouTube Time Series Update
 
 on:
   schedule:
-    - cron: "0 0 * * *"  # runs every day at 00:00 UTC
+    - cron: "10 16 * * *"  # runs every day at 00:00 UTC
   workflow_dispatch:      # allows manual run
 
 permissions:
