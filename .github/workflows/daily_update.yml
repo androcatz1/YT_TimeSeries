@@ -33,17 +33,7 @@ jobs:
       - name: Run time series collection script
         env:
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
-          python time_series_collection_optimized.py
-
-      # 5. Commit and push updated CSV
-      - name: Commit and push changes
-        run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "github-actions@github.com"
-
-          git add video_metadata_time_series.csv
-
-          git diff --staged --quiet || git commit -m "Daily CSV update [skip ci]"
-
-          git push
+          set -e
+          python logic/time_series_collection_supabase.py
