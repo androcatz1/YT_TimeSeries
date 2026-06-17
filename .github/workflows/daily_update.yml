@@ -36,4 +36,4 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
           set -e
-          python logic/time_series_collection_supabase.py
+          python -m logic.time_series_collection_supabase
