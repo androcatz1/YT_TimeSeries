@@ -7,7 +7,9 @@ from datetime import datetime
 from database.connection import get_connection
 import psycopg2
 from psycopg2.extras import execute_values
+import pytz
 
+SGT = pytz.timezone("Asia/Singapore")
 # ==========================================================
 # CONFIG
 # ==========================================================
@@ -153,7 +155,7 @@ def get_video_ids_since_date(channel_id):
 def fetch_video_metadata(video_ids, known_platforms):
     global quota_used
 
-    fetch_time = datetime.now()
+    fetch_time = datetime.now(SGT)
 
     results = []
 
