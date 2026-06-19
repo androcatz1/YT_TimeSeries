@@ -29,7 +29,23 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # 4. Run your script (added database url)
+      # 4. Create Backup
+      - name: Create database backup (SGT)
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          DATE=$(TZ=Asia/Singapore date +%Y-%m-%d)
+          pg_dump "$DATABASE_URL" | gzip > backup-$DATE.sql.gz
+
+      # 5. Upload Backup (Private Artifact)
+      - name: Upload database backup
+        uses: actions/upload-artifact@v4
+        with:
+          name: postgres-backup-${{ github.run_number }}
+          path: backup-*.sql.gz
+          retention-days: 30
+
+      # 6. Run script
       - name: Run time series collection script
         env:
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
