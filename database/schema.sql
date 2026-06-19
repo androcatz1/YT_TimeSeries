@@ -14,6 +14,6 @@ CREATE TABLE IF NOT EXISTS video_metrics_time_series (
     comments_count BIGINT,
 
     platform TEXT,
-    fetched_at TIMESTAMP,
+    fetched_at TIMESTAMP(0),
     duration TEXT
 );
