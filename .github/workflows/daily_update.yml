@@ -31,7 +31,7 @@ jobs:
           pip install -r requirements.txt
 
       # 4. Create Backup
-      - name: Create database backup (SGT)
+      - name: Create database backup
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
