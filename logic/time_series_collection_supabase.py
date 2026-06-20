@@ -57,7 +57,7 @@ def load_known_platforms():
     cur.execute("""
         SELECT DISTINCT ON (video_id)
                video_id, platform
-        FROM video_metrics_time_series
+        FROM public.video_metrics_time_series
         ORDER BY video_id, fetched_at DESC
     """)
 
@@ -224,7 +224,7 @@ def insert_to_postgres(rows):
     cur = conn.cursor()
 
     query = """
-        INSERT INTO video_metrics_time_series (
+        INSERT INTO public.video_metrics_time_series (
             video_id,
             title,
             description,
