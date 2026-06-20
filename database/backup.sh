@@ -3,7 +3,7 @@ set -e
 
 echo "📦 Starting backup..."
 
-DATE=$(date -u +"%Y-%m-%d_%H-%M-%S")
+DATE=$(date -u +"%Y-%m-%d")
 
 pg_dump "$DATABASE_URL" \
   --no-owner \
