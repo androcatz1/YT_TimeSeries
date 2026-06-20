@@ -35,5 +35,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: postgres-backup-${{ github.run_number }}
-          path: backup-*.sql.gz
+          path: backup_*.sql.gz
           retention-days: 30
