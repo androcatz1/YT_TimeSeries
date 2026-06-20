@@ -1,8 +1,6 @@
 name: database backup
 
 on:
-  schedule:
-    - cron: "10 16 * * *"  # runs every day at 00:10 SGT
   workflow_dispatch:      # allows manual run
 
 permissions:
