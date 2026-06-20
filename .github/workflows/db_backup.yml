@@ -13,14 +13,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Create Backup
+       # 1. install client
+      - name: Install postgresql client
+        run: |
+          sudo apt-get update
+          sudo apt-get install postgresql-client -y
+
+      # 2. Create Backup
       - name: Create database backup (SGT)
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
             bash database/backup.sh
 
-      # 2. Upload Backup (Private Artifact)
+      # 3. Upload Backup (Private Artifact)
       - name: Upload database backup
         uses: actions/upload-artifact@v4
         with:
