@@ -1,0 +1,1 @@
+from .time_series_collection_supabase import load_known_platforms
