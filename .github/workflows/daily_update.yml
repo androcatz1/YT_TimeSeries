@@ -35,15 +35,14 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
-          DATE=$(TZ=Asia/Singapore date +%Y-%m-%d)
-          pg_dump "$DATABASE_URL" | gzip > backup-$DATE.sql.gz
+            bash database/backup.sh
 
       # 5. Upload Backup (Private Artifact)
       - name: Upload database backup
         uses: actions/upload-artifact@v4
         with:
           name: postgres-backup-${{ github.run_number }}
-          path: backup-*.sql.gz
+          path: backup_*.sql.gz
           retention-days: 30
 
       # 6. Run script
