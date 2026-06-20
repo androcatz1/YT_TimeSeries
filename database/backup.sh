@@ -1,6 +1,5 @@
 #!/bin/bash
 set -e
-
 echo "📦 Starting backup..."
 
 DATE=$(date -u +"%Y-%m-%d")
