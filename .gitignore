@@ -221,6 +221,5 @@ __marimo__/
 time_series_collection.py
 /database/migrate_to_postgresql.py
 *.csv
-*.ipynb
+test/test_data.ipynb
 time_series_collection_supabase.py
-time_series_collection_optimized.py
