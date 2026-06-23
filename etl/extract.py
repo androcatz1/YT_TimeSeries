@@ -55,7 +55,7 @@ def detect_short(video_id):
     url = f"https://www.youtube.com/shorts/{video_id}"
 
     try:
-        resp = session.get(url, allow_redirects=True, timeout=10)
+        resp = session.head(url, allow_redirects=True, timeout=10)
 
         if "/shorts/" in resp.url:
             return "Short"
