@@ -12,22 +12,30 @@ def insert_to_postgres(rows):
     cur = conn.cursor()
 
     query = """
-        INSERT INTO public.video_metrics_time_series (
-            video_id,
-            title,
-            description,
-            tags,
-            category_id,
-            channel_title,
-            published_at,
-            views,
-            likes,
-            comments_count,
-            platform,
-            fetched_at,
-            duration
-        ) VALUES %s
-    """
+    INSERT INTO video_metrics_time_series_transformed (
+        video_id,
+        title,
+        description,
+        tags,
+        category_id,
+        channel_title,
+        published_at,
+        views,
+        likes,
+        comments_count,
+        platform,
+        topic,
+        fetched_at,
+        duration,
+        published_hour,
+        published_day,
+        published_month,
+        duration_mins,
+        engagement_rate,
+        duration_bucket,
+        days_since_published 
+    ) VALUES %s
+"""
 
     execute_values(cur, query, rows, page_size=5000)
 
