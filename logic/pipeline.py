@@ -1,13 +1,17 @@
 from etl.extract import (
     load_known_platforms,
     get_video_ids_since_date,
-    fetch_video_metadata
+    fetch_video_metadata,
+    load_known_topics
 )
-from config.settings import Settings
+from etl.transform import transform, label_topic
 from etl.load import insert_to_postgres
+from config.settings import Settings
+import pandas as pd
 
 if __name__ == "__main__":
     known_platforms = load_known_platforms()
+    known_topics = load_known_topics()
 
     all_video_ids = []
 
@@ -17,7 +21,12 @@ if __name__ == "__main__":
 
     rows = fetch_video_metadata(
         all_video_ids,
-        known_platforms
+        known_platforms,
+        known_topics
     )
 
-    insert_to_postgres(rows)
+    df = transform(rows)
+    df_labelled = label_topic(df)
+
+    rows_transformed = list(df_labelled.to_records(index = False))
+    insert_to_postgres(rows_transformed)
