@@ -35,7 +35,7 @@ def load_known_platforms():
     cur.execute("""
         SELECT DISTINCT ON (video_id)
                video_id, platform
-        FROM public.video_metrics_time_series
+        FROM public.video_metrics_time_series_transformed
         ORDER BY video_id, fetched_at DESC
     """)
 
@@ -47,6 +47,33 @@ def load_known_platforms():
     known = {r[0]: r[1] for r in rows}
 
     print(f"Loaded {len(known)} cached platforms from DB")
+
+    return known
+
+def load_known_topics():
+    """
+    Load latest known topic per video_id from DB
+    (replaces CSV cache)
+    """
+
+    conn = get_connection()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT DISTINCT ON (video_id)
+               video_id, topic
+        FROM public.video_metrics_time_series_transformed
+        ORDER BY video_id, fetched_at DESC
+    """)
+
+    rows = cur.fetchall()
+
+    cur.close()
+    conn.close()
+
+    known = {r[0]: r[1] for r in rows}
+
+    print(f"Loaded {len(known)} cached topics from DB")
 
     return known
 
@@ -130,7 +157,7 @@ def get_video_ids_since_date(channel_id):
     return video_ids
 
 
-def fetch_video_metadata(video_ids, known_platforms):
+def fetch_video_metadata(video_ids, known_platforms, known_topics):
     global quota_used
 
     fetch_time = datetime.now()
@@ -162,6 +189,11 @@ def fetch_video_metadata(video_ids, known_platforms):
             stats = video.get("statistics", {})
             video_id = video["id"]
 
+            duration = video.get("contentDetails", {}).get("duration", "")
+
+            if duration == "" or duration == "P0D":
+                continue
+
             # PLATFORM LOGIC (cached + detect once)
             platform = known_platforms.get(video_id)
 
@@ -169,6 +201,8 @@ def fetch_video_metadata(video_ids, known_platforms):
                 platform = detect_short(video_id)
                 known_platforms[video_id] = platform
                 print(f"Detected {video_id} -> {platform}")
+
+            topic = known_topics.get(video_id)
 
             published_at = snippet.get("publishedAt", "") 
 
@@ -184,6 +218,7 @@ def fetch_video_metadata(video_ids, known_platforms):
                 int(stats.get("likeCount", 0)),
                 int(stats.get("commentCount", 0)),
                 platform,
+                topic,
                 fetch_time,
                 video.get("contentDetails", {}).get("duration", "")
             ))
