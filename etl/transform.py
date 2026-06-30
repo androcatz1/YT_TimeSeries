@@ -80,6 +80,16 @@ def transform(rows):
 
     return df
 
+def call_gemini(prompt):
+    response = client.models.generate_content(
+        model=Gemini.MODEL_ID,
+        contents=Gemini.SYSTEM_PROMPT + "\n\n" + prompt,
+        config=types.GenerateContentConfig(
+            temperature=0
+        ),
+    )
+    return response
+
 def label_topic(clean_data):
     topics = []
     df = clean_data.copy()
@@ -113,12 +123,3 @@ def label_topic(clean_data):
     return df
 
 
-def call_gemini(prompt):
-    response = client.models.generate_content(
-        model=Gemini.MODEL_ID,
-        contents=Gemini.SYSTEM_PROMPT + "\n\n" + prompt,
-        config=types.GenerateContentConfig(
-            temperature=0
-        ),
-    )
-    return response
