@@ -28,5 +28,5 @@ if __name__ == "__main__":
     df = transform(rows)
     df_labelled = label_topic(df)
 
-    rows_transformed = list(df_labelled.to_records(index = False))
+    rows_transformed = [tuple(row) for row in df_labelled.to_numpy().tolist()]
     insert_to_postgres(rows_transformed)
