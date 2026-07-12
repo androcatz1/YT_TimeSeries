@@ -1,5 +1,5 @@
 import pandas as pd
-import isodate, ast
+import isodate, ast, time
 
 from google import genai
 from google.genai import types
@@ -93,15 +93,23 @@ def call_gemini(prompt):
 def label_topic(clean_data):
     topics = []
     df = clean_data.copy()
-    null_topics_df = df[df['topic'].isna()][['video_id', 'title']]
+    null_topics_df = df[df["topic"].isna()][["video_id", 'title']]
+
+    # Rate limiting configuration 
+    MIN_REQUEST_INTERVAL = 4.0
 
     for i in range(0, len(null_topics_df), Gemini.BATCH_SIZE):
-        batch_df = null_topics_df.iloc[i: i+Gemini.BATCH_SIZE]
+        # Record the start time of this specific request cycle
+        start_time = time.time()
 
-        titles = batch_df['title'].str.cat(sep="\n")
+        batch_df = null_topics_df.iloc[i : i + Gemini.BATCH_SIZE]
+
+        titles = batch_df["title"].str.cat(sep="\n")
         print(titles)
         print("-----------------------------------------------------------")
-        prompt = Gemini.USER_PROMPT_TEMPLATE.format(titles =titles)
+        prompt = Gemini.USER_PROMPT_TEMPLATE.format(titles=titles)
+
+        # Make the API Call
         categories = call_gemini(prompt)
 
         categories = [
@@ -116,10 +124,18 @@ def label_topic(clean_data):
             raise ValueError(
                 f"Expected {len(batch_df)} labels, got {len(categories)}"
             )
-        
-    null_topics_df['topic'] = topics   
+
+        # --- THROTTLING LOGIC ---
+        # Calculate how long this iteration took (processing + API latency)
+        elapsed_time = time.time() - start_time
+
+        # If it took less than 4 seconds, sleep for the remaining time
+        if elapsed_time < MIN_REQUEST_INTERVAL:
+            sleep_duration = MIN_REQUEST_INTERVAL - elapsed_time
+            print(f"[Throttling] Sleeping for {sleep_duration:.2f} seconds...")
+            time.sleep(sleep_duration)
+
+    null_topics_df["topic"] = topics
     df.update(null_topics_df)
 
     return df
-
-
