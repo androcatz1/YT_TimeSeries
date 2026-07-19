@@ -40,7 +40,7 @@ The pipeline pulls recent uploads from the YouTube Data API, detects whether eac
 flowchart LR
     A[YouTube Data API] --> B[Extract]
     B --> C[Transform]
-    C --> D[Load (PostgreSQL)]
+    C --> D[Load-PostgreSQL]
     D --> E[Time-series analysis]
 ```
 
