@@ -40,9 +40,8 @@ The pipeline pulls recent uploads from the YouTube Data API, detects whether eac
 flowchart LR
     A[YouTube Data API] --> B[Extract]
     B --> C[Transform]
-    C --> D[Gemini topic labeling]
-    D --> E[PostgreSQL]
-    E --> F[Time-series analysis]
+    C --> D[Load (PostgreSQL)]
+    D --> E[Time-series analysis]
 ```
 
 ## Main Workflow ⚙️
